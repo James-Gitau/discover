@@ -1352,9 +1352,9 @@ s/EleCenterEngineer/Electric Engineer/i; s/ emc / EMC /i; s/ emea/ EMEA/i; s/-em
 s/engineer5/Engineer V/i; s/-engineering/, Engineering/i; s/-engineer/, Engineer/i; s/-environmental/, Environmental/i; s/-executive/, Executive/i; 
 s/ faa / FAA /i; s/-facilities/, Facilities/i; s/ ferc / FERC /i; s/ fha / FHA /i; s/-finance/, Finance/i; s/-financial/, Financial/i; 
 s/-fleet/, Fleet/i; s/ For / for /g; s/ fsa / FSA /i; s/ fso / FSO /i; s/ fx / FX /i; s/ gaap / GAAP /i; s/-gas/, Gas/i; s/-general/, General/i; 
-s/-generation/, Generation/i; s/grp/Group/i; s/ gsa / GSA /i; s/ gsis / GSIS /i; s/ gsm / GSM /i; s/ hd / HD /i; s/ hmrc / HMRC /i; s/ hp / HP /i; 
-s/ hq / HQ /i; s/-human/, Human/i; s/ hvac / HVAC /i; s/ ia / IA /i; s/ id / ID /i; s/ iii/ III/i; s/ ii/ II/i; s/ iis / IIS /i; s/ In / in /g; 
-s/-industrial/, Industrial/i; s/information technology/IT/i; s/-information/, Information/i; s/-infrastructure/, Infrastructure/i; 
+s/-generation/, Generation/i; s/grp/Group/i; s/ gsa / GSA /i; s/ gsis / GSIS /i; s/ gsm / GSM /i; s/ hd / HD /i; s/ hiv / HIV /i; s/ hmrc / HMRC /i; 
+s/ hp / HP /i; s/ hq / HQ /i; s/-human/, Human/i; s/ hvac / HVAC /i; s/ ia / IA /i; s/ id / ID /i; s/ iii/ III/i; s/ ii/ II/i; s/ iis / IIS /i; 
+s/ In / in /g; s/-industrial/, Industrial/i; s/information technology/IT/i; s/-information/, Information/i; s/-infrastructure/, Infrastructure/i; 
 s/-instrumentation/, Instrumentation/i; s/-internal/, Internal/i; s/ ip / IP /i; s/ ir / IR /i; 
 s/itenterpriseprojectmanager/IT Enterprise Project Manager/i; s/-IT/, IT/i; s/ iv / IV /i; s/ jc / JC /i; s/ jd / JD /i; s/ jt / JT /i; 
 s/konsult, konsultchef, projektledare/Consultant/i; s/laboratorynetwork/Laboratory, Network/i; s/-labor/, Labor/i; 
@@ -1380,11 +1380,15 @@ s/unsupervisor/Supervisor/i; s/uscg/USCG/i; s/ usa / USA /i; s/ us / US /i; s/ u
 s/ vii / VII /i; s/ vi / VI /i; s/ vms / VMS /i; s/ voip / VoIP /i; s/ vpn / VPN /i; s/ With / with /g' > tmp5
 
 # Remove lines that contain 2 words and clean up.
-awk 'NF != 2' tmp5 | sed "s/d'a/D'A/i; s/d'c/D'C/i; s/d'e/D'E/i; s/d's/D'S/i; s/l'a/L'A/i; s/o'b/O'B/i; s/o'c/O'C/i; s/o'd/O'D/i; s/o'f/O'F/i; 
-s/o'g/O'G/i; s/o'h/O'H/i; s/o'k/O'K/i; s/o'l/O'L/i; s/o'm/O'M/i; s/o'N/O'N/i; s/o'p/O'P/i; s/o'r/O'R/i; s/o's/O'S/i" > tmp6
+awk 'NF != 2' tmp5 | sed "s/d'a/D'A/i; s/d'c/D'C/i; s/d'e/D'E/i; s/d'h/D'H/i; s/d's/D'S/i; s/l'a/L'A/i; s/o'b/O'B/i; s/o'c/O'C/i; s/o'd/O'D/i; 
+s/o'f/O'F/i; s/o'g/O'G/i; s/o'h/O'H/i; s/o'k/O'K/i; s/o'l/O'L/i; s/o'm/O'M/i; s/o'N/O'N/i; s/Obrien/O'Brien/i; s/Oconnor/O'Connor/i; 
+s/Odonnell/O'Donnell/i; s/Ohara/O'Hara/i; s/o'p/O'P/i; s/o'r/O'R/i; s/o's/O'S/i; s/Otoole/O'Toole/i; s/o't/O'T/i" > tmp6
 
-# Remove trailing white space and trailing commas, delete lines with a single word
-cat tmp6 | sed 's/[ \t]*$//; s/,$//; /[[:blank:]]/!d' | sort -u > $home/data/names.txt
+# Replace parenthesis and the contents inside with spaces - thanks Mike G
+cat tmp6 | perl -pe 's/(\(.*\))/q[ ] x length $1/ge' > tmp7
+
+# Remove trailing white space, railing commas, and delete lines with a single word
+cat tmp7 | sed 's/[ \t]*$//; s/,$//; /[[:blank:]]/!d' | sort -u > $home/data/names.txt
 rm tmp*
 
 echo
