@@ -62,7 +62,7 @@ mv tmp tmp2                        Rename or move tmp to tmp2
 rm tmp                             Delete the file tmp
 rm -rf test                        Force delete the directory test
 
-ln -s app /path/to/app/            Create a symbolic link
+ln -s /path/to/file /path/to/link  Create a symbolic link
 
 mkdir tmp                          Create a directory called tmp
 touch tmp                          Create a file called tmp

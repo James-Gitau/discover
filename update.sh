@@ -115,9 +115,17 @@ if [ ! -f /usr/bin/xmllint ]; then
      echo
 fi
 
-if [ ! -f /usr/bin/phantomjs ]; then
-     echo -e "\e[1;33mInstalling PhantomJS.\e[0m"
-     apt-get install -y phantomjs
+if [ ! -d /opt/phantomjs-2.1.1-linux-x86_64/ ]; then
+     echo -e "\e[1;33mRemoving apt-get version of PhantomJS.\e[0m"
+     apt-get remove -y phantomjs
+     rm /var/cache/apt/archives/phantomjs_2.1.1+dfsg-2_amd64.deb
+     echo
+     echo -e "\e[1;33mInstalling full version of PhantomJS.\e[0m"
+     wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2
+     tar xvf phantomjs-2.1.1-linux-x86_64.tar.bz2
+     mv phantomjs-2.1.1-linux-x86_64 /opt/
+     ln -s /opt/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin/phantomjs
+     rm phantomjs-2.1.1-linux-x86_64.tar.bz2
      echo
 fi
 
