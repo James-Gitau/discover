@@ -205,7 +205,7 @@ case $choice in
           f_error
      fi
 
-     echo -n "Domain:  "
+     echo -n "Domain: "
      read domain
 
      # Check for no answer
@@ -213,7 +213,7 @@ case $choice in
           f_error
      fi
 
-     # If fol  der doesn't exist, create it
+     # If folder doesn't exist, create it
      if [ ! -d $home/data/$domain ]; then
           cp -R $discover/report/ $home/data/$domain
           sed 's/REPLACEDOMAIN/'$domain'/g' $home/data/$domain/index.htm > tmp
@@ -1369,14 +1369,14 @@ s/ Of / of /g; s/-operations/, Operations/i; s/-oracle/, Oracle/i; s/-other/, Ot
 s/ phd / PhD /i; s/ pj / PJ /i; s/-plant/, Plant/i; s/plt/Plant/i; s/pmo/PMO/i; s/ pmp/ PMP/i; s/ pm / PM /i; s/-power/, Power/i; 
 s/-property/, Property/i; s/-public/, Public/i; s/pyble/Payble/i; s/ os / OS /i; s/r&d/R&D/i; s/ r and d /R&D/i; s/-records/, Records/i; 
 s/-regulated/, Regulated/i; s/-regulatory/, Regulatory/i; s/-related/, Related/i; s/-remittance/, Remittance/i; s/-renewals/, Renewals/i; 
-s/-revenue/, Revenue/i; s/ rfid / RFID /i; s/ rfp / RFP /i; s/ rf / RF /i; s/-safety/, Safety/i; s/san manager/SAN Manager/i; s/scada/SCADA/i; 
-s/sdlc/SDLC/i; s/setac-/SETAC,/i; s/sftwr/Software/i; s/-short/, Short/i; s/ smb / SMB /i; s/sms/SMS/i; s/smtp/SMTP/i; s/snr/Senior/i; 
+s/-revenue/, Revenue/i; s/ rfid / RFID /i; s/ rfp / RFP /i; s/ rf / RF /i; s/saas/SaaS/i; s/-safety/, Safety/i; s/san manager/SAN Manager/i; 
+s/scada/SCADA/i; s/sdlc/SDLC/i; s/setac-/SETAC,/i; s/sftwr/Software/i; s/-short/, Short/i; s/ smb / SMB /i; s/sms/SMS/i; s/smtp/SMTP/i; s/snr/Senior/i; 
 s/.specialist./ Specialist /i; s/sql/SQL/i; s/spvr/Supervisor/i; s/srbranch/Senior Branch/i; s/srsales/Senior Sales/i; s/ ssl / SSL /i; 
 s/-staff/, Staff/i; s/stf/Staff/i; s/-station/, Station/i; s/-strategic/, Strategic/i; s/-student/, Student/i; s/-substation/, Substation/i; 
 s/-supplier/, Supplier/i; s/-supply/, Supply/i; s/-surveillance/, Surveillance/i; s/swepco/SWEPCO/i; s/-system/, System/i; s/-tax/, Tax/i; 
 s/-technical/, Technical/i; s/-telecommunications/, Telecommunications/i; s/ The / the /g; s/-three/, Three/i; s/-tickets/, Tickets/i; 
 s/-trading/, Trading/i; s/-transmission/, Transmission/i; s/ttechnical/Technical/i; s/-turbine/, Turbine/i; s/ to .*$//i; s/ ui / UI /i; s/ uk / UK /i; 
-s/unsupervisor/Supervisor/i; s/uscg/USCG/i; s/ usa / USA /i; s/ us / US /i; s/ u.s / US /i; s/-utility/, Utility/i; s/ ux / UX /i; 
+s/unsupervisor/Supervisor/i; s/uscg/USCG/i; s/ usa / USA /i; s/ us / US /i; s/ u.s / US /i; s/usmc/USMC/i; s/-utility/, Utility/i; s/ ux / UX /i; 
 s/vicepresident/Vice President/i; s/ vii / VII /i; s/ vi / VI /i; s/ vms / VMS /i; s/ voip / VoIP /i; s/ vpn / VPN /i; s/ With / with /g' > tmp5
 
 # Remove lines that contain 2 words and clean up.
