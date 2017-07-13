@@ -205,7 +205,7 @@ case $choice in
           f_error
      fi
 
-     echo -n "Domain: "
+     echo -n "Domain:  "
      read domain
 
      # Check for no answer
@@ -227,7 +227,7 @@ case $choice in
      if [ "$answer" == "y" ]; then
           f_location
           echo "last_name#first_name#title" > $home/data/names.csv
-          cat $location | sed 's/, /#/' | sed 's/  /#/' | tr -s ' ' | tr -d '\t' | sed 's/# /#/g' >> $home/data/names.csv
+          cat $location | sed 's/, /#/' | sed 's/  /#/' | tr -s ' ' | tr -d '\t' | sed 's/;/#/g; s/#$//g' >> $home/data/names.csv
           cat $discover/resource/recon-ng-import-names.rc > passive2.rc
      fi
 
@@ -726,7 +726,7 @@ case $choice in
 
      cat $discover/resource/recon-ng.rc >> passive.rc
      sed -i "s/yyy/$domain/g" passive.rc
-     recon-ng --no-check -r passive.rc
+     recon-ng --no-check -r $discover/passive.rc
 
      ##############################################################
 
@@ -941,8 +941,6 @@ case $choice in
      $web https://www.google.com/#q=site%3A$domain+filetype%3Appt+OR+filetype%3Apptx &
      sleep 2
      $web https://www.google.com/#q=site%3A$domain+filetype%3Adoc+OR+filetype%3Adocx &
-     sleep 2
-     $web https://www.google.com/#q=site%3A$domain+filetype%3Aasp &
      sleep 2
      $web https://www.google.com/#q=site%3A$domain+filetype%3Apdf &
      sleep 2
