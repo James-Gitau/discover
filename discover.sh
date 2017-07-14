@@ -611,10 +611,10 @@ case $choice in
                     iptmp=$(ping -c1 $regdomain 2>&1)
 
                     if echo $iptmp | grep -q 'unknown host'; then
-                         echo "$regdomain,$registrar,$regorg,$regemail,No IP Found" >> tmp4
+                         echo "$regdomain,$regemail,$regorg,$registrar,No IP Found" >> tmp4
                     else
                          ipaddr=$(echo $iptmp | grep 'PING' | cut -d '(' -f2 | cut -d ')' -f1)
-                         echo "$regdomain,$registrar,$regorg,$regemail,$ipaddr" >> tmp4
+                         echo "$regdomain,$regemail,$regorg,$registrar,$ipaddr" >> tmp4
                     fi
                fi
                let number=number+1
