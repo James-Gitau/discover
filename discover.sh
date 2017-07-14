@@ -151,7 +151,7 @@ mkdir $save_dir
 mv $name/ $save_dir 2>/dev/null
 
 # Recon files
-mv debug* curl emails* hosts names* networks* passive* records squatting network-tools whois* sub* doc pdf ppt txt xls tmp* z* $save_dir 2>/dev/null
+mv curl debug* emails* domain hosts names* networks passive* registered* squatting sub* tmp* whois* z* doc pdf ppt txt xls $save_dir 2>/dev/null
 cd /tmp/
 rm emails names networks profiles subdomains 2>/dev/null
 
@@ -416,7 +416,7 @@ case $choice in
      # Remove leading whitespace
      sed 's/^[ \t]*//' tmp > tmp2
      # Clean up
-     egrep -v '(#|%|<a|=-=-=-=|;:|Access may be|Additionally|Afilias except|and DNS Hosting|and limitations of|any use of|Be sure to|at the end of|By submitting an|by the terms|can easily change|circumstances will|clientDeleteProhibited|clientTransferProhibited|clientUpdateProhibited|company may be|complaint will|contact information|Contact us|Copy and paste|currently set|database|data contained in|data presented in|date of|dissemination|Domaininfo AB|Domain Management|Domain names in|Domain status: ok|enable high|except as reasonably|failure to|facsimile of|for commercial purpose|for detailed information|For information for|for information purposes|for the sole|Get Noticed|Get a FREE|guarantee its|HREF|In Europe|In most cases|in obtaining|in the address|includes restrictions|including spam|information is provided|is not the|is providing|JPRS database provides|Learn how|Learn more|makes this information|MarkMonitor|mining this data|minute and one|modify existing|modify these terms|must be sent|name cannot|NamesBeyond|not to use|Note: This|NOTICE|obtaining information about|of Moniker|of this data|or hiding any|or otherwise support|other use of|own existing customers|Please be advised|Please note|policy|prior written consent|privacy is|Problem Reporting System|Professional and|prohibited without|Promote your|protect the|Public Interest|queries or|Register your|Registrars|registration record|repackaging,|responsible for|See Business Registration|server at|solicitations via|sponsorship|Status|support questions|support the transmission|telephone, or facsimile|that apply to|that you will|the right| The data is|The fact that|the transmission|The Trusted Partner|This listing is|This feature is|This information|This service is|to collect or|to entities|to report any|To suppress Japanese|transmission of mass|UNITED STATES|United States|unsolicited advertising|Users may|Version 6|via e-mail|Visit AboutUs.org|while believed|will use this|with many different|with no guarantee|We reserve the|Whois|you agree|You may not)' tmp2 > tmp3
+     egrep -v '(#|%|<a|=-=-=-=|;|Access may be|Additionally|Afilias except|and DNS Hosting|and limitations of|any use of|Be sure to|at the end of|By submitting an|by the terms|can easily change|circumstances will|clientDeleteProhibited|clientTransferProhibited|clientUpdateProhibited|company may be|complaint will|contact information|Contact us|Copy and paste|currently set|database|data contained in|data presented in|date of|dissemination|Domaininfo AB|Domain Management|Domain names in|Domain status: ok|enable high|except as reasonably|failure to|facsimile of|for commercial purpose|for detailed information|For information for|for information purposes|for the sole|Get Noticed|Get a FREE|guarantee its|HREF|In Europe|In most cases|in obtaining|in the address|includes restrictions|including spam|information is provided|is not the|is providing|JPRS database provides|Learn how|Learn more|makes this information|MarkMonitor|mining this data|minute and one|modify existing|modify these terms|must be sent|name cannot|NamesBeyond|not to use|Note: This|NOTICE|obtaining information about|of Moniker|of this data|or hiding any|or otherwise support|other use of|own existing customers|Please be advised|Please note|policy|prior written consent|privacy is|Problem Reporting System|Professional and|prohibited without|Promote your|protect the|Public Interest|queries or|Register your|Registrars|registration record|repackaging,|responsible for|See Business Registration|server at|solicitations via|sponsorship|Status|support questions|support the transmission|telephone, or facsimile|that apply to|that you will|the right| The data is|The fact that|the transmission|The Trusted Partner|This listing is|This feature is|This information|This service is|to collect or|to entities|to report any|To suppress Japanese|transmission of mass|UNITED STATES|United States|unsolicited advertising|Users may|Version 6|via e-mail|Visit AboutUs.org|while believed|will use this|with many different|with no guarantee|We reserve the|Whois|you agree|You may not)' tmp2 > tmp3
      # Remove lines starting with "*"
      sed '/^*/d' tmp3 > tmp4
      # Remove lines starting with "-"
@@ -730,8 +730,8 @@ case $choice in
 
      ##############################################################
 
-     grep "@$domain" /tmp/emails | awk '{print $2}' | egrep -v '(>|select)' | sort -u > emails-recon
-     cat emails emails-recon | sort -u > emails-final
+     grep "@$domain" /tmp/emails | awk '{print $2}' | grep -v '>' | sort -u > emails-recon
+     cat emails emails-recon | grep -iv 'select' | sort -u > emails-final
 
      grep '|' /tmp/names | egrep -iv '(_|aepohio|aepsoc|contact|production)' | sed 's/|//g; s/^[ \t]*//; /^[0-9]/d; /^-/d' | tr '[A-Z]' '[a-z]' | sed 's/\b\(.\)/\u\1/g; s/iii/III/g; s/ii/II/g; s/Mca/McA/g; s/Mcb/McB/g; s/Mcc/McC/g; s/Mcd/McD/g; s/Mce/McE/g; s/Mcf/McF/g; s/Mcg/McG/g; s/Mci/McI/g; s/Mck/McK/g; s/Mcl/McL/g; s/Mcm/McM/g; s/Mcn/McN/g; s/Mcs/McS/g; s/[ \t]*$//' | sort -u > names-recon
 
@@ -781,7 +781,7 @@ case $choice in
           namecount=$(wc -l names-recon | cut -d ' ' -f1)
           echo "Names                $namecount" >> zreport
           echo "Names ($namecount)" >> tmp
-          echo $short >> tmp
+          echo $long >> tmp
           cat names-recon >> tmp
           echo >> tmp
           cat names-recon >> $home/data/$domain/data/names.htm; echo "</pre>" >> $home/data/$domain/data/names.htm
@@ -906,7 +906,7 @@ case $choice in
      cat zreport >> $home/data/$domain/data/passive-recon.htm; echo "</pre>" >> $home/data/$domain/data/passive-recon.htm
 
      mv recon-ng.rc $home/data/$domain/ 2>/dev/null
-     rm curl debug* emails* hosts names* networks* passive* squatting sub* tmp* network-tools whois* z* doc pdf ppt txt xls domains 2>/dev/null
+     rm curl debug* emails* domain hosts names* networks passive* registered* squatting sub* tmp* whois* z* doc pdf ppt txt xls 2>/dev/null
      rm $home/data/*.csv 2>/dev/null
      cd /tmp/
      rm emails names networks profiles subdomains registered-domains 2>/dev/null
@@ -936,42 +936,34 @@ case $choice in
      sleep 2
      $web https://www.google.com/search?site=\&tbm=isch\&source=hp\&q=$companyurl%2Blogo &
      sleep 2
-     $web https://www.google.com/#q=site%3A$domain+filetype%3Axls+OR+filetype%3Axlsx &
+
+     # File types
+     $web https://www.google.com/#q=site%3A$domain+filetype%3Adoc+OR+filetype%3Adocx &
      sleep 2
      $web https://www.google.com/#q=site%3A$domain+filetype%3Appt+OR+filetype%3Apptx &
      sleep 2
-     $web https://www.google.com/#q=site%3A$domain+filetype%3Adoc+OR+filetype%3Adocx &
-     sleep 2
-     $web https://www.google.com/#q=site%3A$domain+filetype%3Apdf &
+     $web https://www.google.com/#q=site%3A$domain+filetype%3Axls+OR+filetype%3Axlsx &
      sleep 2
      $web https://www.google.com/#q=site%3A$domain+filetype%3Atxt &
      sleep 2
+
      $web https://www.google.com/#q=site%3A$domain+inurl:admin &
-     sleep 2
-     $web https://www.google.com/#q=site%3A$domain+inurl:confidential &
-     sleep 2
-     $web https://www.google.com/#q=site%3A$domain+inurl:connect &
      sleep 2
      $web https://www.google.com/#q=site%3A$domain+inurl:login &
      sleep 2
-     $web https://www.google.com/#q=site%3A$domain+inurl:portal &
-     sleep 2
-     $web https://www.google.com/#q=site%3A$domain+inurl:upload &
+
+     $web https://www.google.com/#q=site%3A$domain+%22index+of/%22+%22parent+directory%22 &
      sleep 2
      $web https://www.google.com/#q=site%3A$domain+%22internal+use+only%22 &
      sleep 2
-     $web https://www.google.com/#q=site%3A$domain+password &
-     sleep 2
-     $web https://www.google.com/#q=site%3A$domain+ssn &
-     sleep 2
-     $web https://www.google.com/#q=site%3A$domain+%22index+of/%22+%22parent+directory%22 &
-     sleep 2
+
      $web https://www.google.com/#q=site%3Apastebin.com+intext:%40$domain &
      sleep 2
      $web http://boardreader.com/s/$domain.html;language=English &
      sleep 2
      $web http://api.hackertarget.com/pagelinks/?q=$domain &
      sleep 2
+
      $web https://dockets.justia.com/search?parties=%22$companyurl%22&cases=mostrecent &
      sleep 2
      $web http://www.reuters.com/finance/stocks/lookup?searchType=any\&search=$companyurl &
