@@ -7,7 +7,7 @@
 # Special thanks to the following people:
 #
 # Jay Townsend - conversion from Backtrack to Kali, manages pull requests & issues
-# Jason Ashton (@ninewires)- Penetration Testers Framework (PTF) compatibility, bug crusher
+# Jason Ashton (@ninewires)- Penetration Testers Framework (PTF) compatibility, Registered Domains, bug crusher
 # Ian Norden (@iancnorden) - new report framework design
 #
 # Ben Wood (@DilithiumCore) - regex master
@@ -151,7 +151,7 @@ mkdir $save_dir
 mv $name/ $save_dir 2>/dev/null
 
 # Recon files
-mv curl debug* emails* domain hosts names* networks passive* registered* squatting sub* tmp* whois* z* doc pdf ppt txt xls $save_dir 2>/dev/null
+mv curl debug* emails* domain hosts names* network* passive* registered* squatting sub* tmp* whois* z* doc pdf ppt txt xls $save_dir 2>/dev/null
 cd /tmp/
 rm emails names networks profiles subdomains 2>/dev/null
 
@@ -470,6 +470,7 @@ case $choice in
           cat -s tmp6 > tmp7
           # Clean up
           sed 's/+1-//g' tmp7 > tmp8
+
           while IFS=$': \t' read -r first rest; do
                if [[ $first$rest ]]; then
                     printf '%-20s %s\n' "$first:" "$rest"
@@ -477,6 +478,7 @@ case $choice in
                     echo
                fi
           done < tmp8 > whois-ip
+
           echo
 
           # Remove all empty files
@@ -494,6 +496,7 @@ case $choice in
      curl --silent --header "Host:dnsdumpster.com" --referer https://dnsdumpster.com --user-agent "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0" --data "csrfmiddlewaretoken=$rando&targetip=$domain" --cookie "csrftoken=$rando; _ga=GA1.2.1737013576.1458811829; _gat=1" https://dnsdumpster.com > tmp
 
      dumpsterxls=$(grep 'xls' tmp | tr '"' ' ' | cut -d ' ' -f10)
+
      if ! [ -z $dnsdumpster ]; then
           wget -q $dumpsterxls -O tmp.xlsx
 
@@ -551,7 +554,6 @@ case $choice in
 
      # Remove lines from FOO to the second BAR
      awk '/DOCTYPE/{f=1} (!f || f>2){print} (f && /\/form/){f++}' tmp > tmp2
-
      egrep -v '(Background|Hosting country|the-world-factbook)' tmp2 | sed 's/Refresh//g' > tmp3
 
      # Find lines that contain FOO, and delete to the end of file
@@ -596,69 +598,71 @@ case $choice in
      echo '</body>' >> $home/data/$domain/data/zonetransfer.htm
      echo '</html>' >> $home/data/$domain/data/zonetransfer.htm
 
-          echo "Registered Domains        (31/$total)"
-          f_regdomain(){
-          while read regdomain; do
-               whois -H $regdomain 2>&1 | sed -e 's|^[ \t]*||' | sed 's| \+ ||g' | sed 's|: |:|g' > tmp5
-               nomatch=$(grep -c -E 'No match for|Name or service not known' tmp5)
+     echo "Registered Domains        (31/$total)"
+     f_regdomain(){
+     while read regdomain; do
+          whois -H $regdomain 2>&1 | sed -e 's|^[ \t]*||' | sed 's| \+ ||g' | sed 's|: |:|g' > tmp5
+          nomatch=$(grep -c -E 'No match for|Name or service not known' tmp5)
 
-               if [[ $nomatch -eq 1 ]]; then
-                    echo "$regdomain -- No Whois Matches Found" >> tmp4
-               else
-                    registrar=$(grep -m1 'Registrar:' tmp5 | cut -d ':' -f2 | sed 's|,||g')
-                    regorg=$(grep -m1 'Registrant Organization:' tmp5 | cut -d ':' -f2 | sed 's|,||g')
-                    regemail=$(grep -m1 'Registrant Email:' tmp5 | cut -d ':' -f2)
-                    iptmp=$(ping -c1 $regdomain 2>&1)
-
-                    if echo $iptmp | grep -q 'unknown host'; then
-                         echo "$regdomain,$regemail,$regorg,$registrar,No IP Found" >> tmp4
-                    else
-                         ipaddr=$(echo $iptmp | grep 'PING' | cut -d '(' -f2 | cut -d ')' -f1)
-                         echo "$regdomain,$regemail,$regorg,$registrar,$ipaddr" >> tmp4
-                    fi
-               fi
-               let number=number+1
-               echo -ne "     \x1B[1;33m$number \x1B[0mof \x1B[1;33m$domcount \x1B[0mdomains"\\r
-               sleep 2
-          done < tmp3
-          }
-
-          # Get domains registered by company name and email address domain
-          curl --silent http://viewdns.info/reversewhois/?q=%40$domain > tmp
-          sleep 2
-          curl --silent http://viewdns.info/reversewhois/?q=$companyurl > tmp2
-
-          echo '111AAA--placeholder--' > tmp4
-          if grep -q 'There are 0 domains' tmp && grep -q 'There are 0 domains' tmp2; then
-               rm tmp tmp2
-               echo 'No Domains Found.' > tmp6
-               break
-          elif ! [ -s tmp ] && ! [ -s tmp2 ]; then
-               rm tmp tmp2
-               echo 'No Domains Found.' > tmp6
-               break
-          
-          # Loop thru list of domains, gathering details about the domain
-          elif grep -q 'paymenthash' tmp; then
-               grep 'Domain Name' tmp | sed 's|<tr>|\n|g' | grep '</td></tr>' | cut -d '>' -f2 | cut -d '<' -f1 > tmp3
-               grep 'Domain Name' tmp2 | sed 's|<tr>|\n|g' | grep '</td></tr>' | cut -d '>' -f2 | cut -d '<' -f1 >> tmp3
-               sort -uV tmp3 -o tmp3
-               domcount=$(wc -l tmp3 | sed -e 's|^[ \t]*||' | cut -d ' ' -f1)
-               f_regdomain
+          if [[ $nomatch -eq 1 ]]; then
+               echo "$regdomain -- No Whois Matches Found" >> tmp4
           else
-               grep 'ViewDNS.info' tmp | sed 's|<tr>|\n|g' | grep '</td></tr>' | grep -v -E 'font size|Domain Name' | cut -d '>' -f2 | cut -d '<' -f1 > tmp3
-               grep 'ViewDNS.info' tmp2 | sed 's|<tr>|\n|g' | grep '</td></tr>' | grep -v -E 'font size|Domain Name' | cut -d '>' -f2 | cut -d '<' -f1 >> tmp3
-               sort -uV tmp3 -o tmp3
-               domcount=$(wc -l tmp3 | sed -e 's|^[ \t]*||' | cut -d ' ' -f1)
-               f_regdomain
+               registrar=$(grep -m1 'Registrar:' tmp5 | cut -d ':' -f2 | sed 's|,||g')
+               regorg=$(grep -m1 'Registrant Organization:' tmp5 | cut -d ':' -f2 | sed 's|,||g')
+               regemail=$(grep -m1 'Registrant Email:' tmp5 | cut -d ':' -f2)
+               iptmp=$(ping -c1 $regdomain 2>&1)
+
+               if echo $iptmp | grep -q 'unknown host'; then
+                    echo "$regdomain,$regemail,$regorg,$registrar,No IP Found" >> tmp4
+               else
+                    ipaddr=$(echo $iptmp | grep 'PING' | cut -d '(' -f2 | cut -d ')' -f1)
+                    echo "$regdomain,$regemail,$regorg,$registrar,$ipaddr" >> tmp4
+               fi
           fi
 
-          # Formatting & clean-up
-          sort tmp4 | sed 's|111AAA--placeholder--|Domain,Registrar,Registration Org,Registration Email,IP Address|' > tmp6
-          column -s ',' -t tmp6 > registered-domains
-          echo "Domains registered to $company using a corporate email." >> $home/data/$domain/data/registered-domains.htm
-          echo >> $home/data/$domain/data/registered-domains.htm
-          echo
+          let number=number+1
+          echo -ne "     \x1B[1;33m$number \x1B[0mof \x1B[1;33m$domcount \x1B[0mdomains"\\r
+          sleep 2
+     done < tmp3
+     }
+
+     # Get domains registered by company name and email address domain
+     curl --silent http://viewdns.info/reversewhois/?q=%40$domain > tmp
+     sleep 2
+     curl --silent http://viewdns.info/reversewhois/?q=$companyurl > tmp2
+
+     echo '111AAA--placeholder--' > tmp4
+
+     if grep -q 'There are 0 domains' tmp && grep -q 'There are 0 domains' tmp2; then
+          rm tmp tmp2
+          echo 'No Domains Found.' > tmp6
+          break
+     elif ! [ -s tmp ] && ! [ -s tmp2 ]; then
+          rm tmp tmp2
+          echo 'No Domains Found.' > tmp6
+          break
+
+     # Loop thru list of domains, gathering details about the domain
+     elif grep -q 'paymenthash' tmp; then
+          grep 'Domain Name' tmp | sed 's|<tr>|\n|g' | grep '</td></tr>' | cut -d '>' -f2 | cut -d '<' -f1 > tmp3
+          grep 'Domain Name' tmp2 | sed 's|<tr>|\n|g' | grep '</td></tr>' | cut -d '>' -f2 | cut -d '<' -f1 >> tmp3
+          sort -uV tmp3 -o tmp3
+          domcount=$(wc -l tmp3 | sed -e 's|^[ \t]*||' | cut -d ' ' -f1)
+          f_regdomain
+     else
+          grep 'ViewDNS.info' tmp | sed 's|<tr>|\n|g' | grep '</td></tr>' | grep -v -E 'font size|Domain Name' | cut -d '>' -f2 | cut -d '<' -f1 > tmp3
+          grep 'ViewDNS.info' tmp2 | sed 's|<tr>|\n|g' | grep '</td></tr>' | grep -v -E 'font size|Domain Name' | cut -d '>' -f2 | cut -d '<' -f1 >> tmp3
+          sort -uV tmp3 -o tmp3
+          domcount=$(wc -l tmp3 | sed -e 's|^[ \t]*||' | cut -d ' ' -f1)
+          f_regdomain
+     fi
+
+     # Formatting & clean-up
+     sort tmp4 | sed 's|111AAA--placeholder--|Domain,Registrar,Registration Org,Registration Email,IP Address|' > tmp6
+     column -s ',' -t tmp6 > registered-domains
+     echo "Domains registered to $company using a corporate email." >> $home/data/$domain/data/registered-domains.htm
+     echo >> $home/data/$domain/data/registered-domains.htm
+     echo
 
      ##############################################################
 
@@ -738,6 +742,7 @@ case $choice in
      grep '/' /tmp/networks | grep -v 'Spooling' | awk '{print $2}' | $sip > networks-recon
 
      grep "$domain" /tmp/subdomains | grep -v '>' | awk '{print $2,$4}' | column -t | sort -u > sub-recon
+
      ##############################################################
 
      cat networks-tmp networks-recon | sort -u | $sip > networks
@@ -4246,7 +4251,7 @@ case $choice in
      6) f_list;;
      7) f_single;;
      8) f_errorOSX; f_enumerate;;
-     9) f_directObjectRef;;	 
+     9) f_directObjectRef;;
      10) f_multitabs;;
      11) f_errorOSX; f_nikto;;
      12) f_errorOSX; f_ssl;;
