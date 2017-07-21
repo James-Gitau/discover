@@ -747,7 +747,7 @@ case $choice in
 
      cat networks-tmp networks-recon | sort -u | $sip > networks
 
-     cat sub* | grep -v "$domain\." | grep -v '|' | sed 's/www\.//g' | column -t | tr '[A-Z]' '[a-z]' | sort -u > tmp
+     cat sub* | grep -v "$domain\." | grep -v '|' | sed 's/www\.//g' | grep -v 'select' | column -t | tr '[A-Z]' '[a-z]' | sort -u > tmp
      # Remove lines that contain a single word
      sed '/[[:blank:]]/!d' tmp > subdomains
 
@@ -810,16 +810,6 @@ case $choice in
           echo >> tmp
      fi
 
-     if [ -e squatting ]; then
-          urlcount2=$(wc -l squatting | cut -d ' ' -f1)
-          echo "Squatting            $urlcount2" >> zreport
-          echo "Squatting ($urlcount2)" >> tmp
-          echo $long >> tmp
-          cat squatting >> tmp
-          echo >> tmp
-          cat squatting >> $home/data/$domain/data/squatting.htm; echo "</pre>" >> $home/data/$domain/data/squatting.htm
-     fi
-
      if [ -e registered-domains ]; then
           domaincount1=$(wc -l registered-domains | cut -d ' ' -f1)
           domaincount2=$(echo $(($domaincount1-1)))
@@ -829,6 +819,16 @@ case $choice in
           cat registered-domains >> tmp
           echo >> tmp
           cat registered-domains >> $home/data/$domain/data/registered-domains.htm; echo "</pre>" >> $home/data/$domain/data/registered-domains.htm
+     fi
+
+     if [ -e squatting ]; then
+          urlcount2=$(wc -l squatting | cut -d ' ' -f1)
+          echo "Squatting            $urlcount2" >> zreport
+          echo "Squatting ($urlcount2)" >> tmp
+          echo $long >> tmp
+          cat squatting >> tmp
+          echo >> tmp
+          cat squatting >> $home/data/$domain/data/squatting.htm; echo "</pre>" >> $home/data/$domain/data/squatting.htm
      fi
 
      if [ -e subdomains ]; then
