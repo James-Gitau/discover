@@ -69,16 +69,11 @@ def search(argv):
         			result.append(x)
 		cant+=100
 
-#	t=0
-
 	if result==[]:
 		print "No results were found."
 	else:
 		for x in result:
-#			x= re.sub('<li class="first">','',x)
-#			x= re.sub('</li>','',x)
 			print x
-#			t+=1
 
 if __name__ == "__main__":
         try: search(sys.argv[1:])

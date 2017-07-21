@@ -103,12 +103,6 @@ if [ ! -f /usr/bin/ssconvert ]; then
      echo
 fi
 
-if [ ! -f /usr/bin/goofile ]; then
-     echo -e "\e[1;33mInstalling goofile.\e[0m"
-     apt-get install -y goofile
-     echo
-fi
-
 if [ ! -f /usr/bin/xmllint ]; then
      echo -e "\e[1;33mInstalling libxml2-utils.\e[0m"
      apt-get install -y libxml2-utils
