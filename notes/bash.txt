@@ -101,8 +101,8 @@ if [ -z "$1" ]; then
 fi
 
 # Check for root.
-if [ $(whoami) = "root" ]; then 
-     echo "You are running as root."
+if [[ $EUID -ne 0 ]]; then
+     echo "This script must be ran as root."
 fi
 
 # Check for no answer.
@@ -154,7 +154,7 @@ blue='\e[1;34m'
 purple='\e[1;35m'
 cyan='\e[1;36m'
 
-echo -e $red"This is red."
+echo -e $red "This is red."
 ------------------------------------------------------------------------------------------------------
 
 # Compare two dates.
