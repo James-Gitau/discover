@@ -7,22 +7,23 @@
 # Special thanks to the following people:
 #
 # Jay Townsend - conversion from Backtrack to Kali, manages pull requests & issues
-# Jason Ashton (@ninewires)- Penetration Testers Framework (PTF) compatibility, Registered Domains, bug crusher
-# Ian Norden (@iancnorden) - new report framework design
+# Jason Ashton (@ninewires)- Penetration Testers Framework (PTF) compatibility, Registered Domains, bug crusher, and bash ninja
 #
 # Ben Wood (@DilithiumCore) - regex master
 # Dave Klug - planning, testing and bug reports
 # Jason Arnold (@jasonarnold) - planning original concept, author of ssl-check and co-author of crack-wifi
 # John Kim - python guru, bug smasher, and parsers
 # Eric Milam (@Brav0Hax) - total re-write using functions
+# Hector Portillo - report framework v3
+# Ian Norden (@iancnorden) - report framework v2
 # Martin Bos (@cantcomputer) - IDS evasion techniques
 # Matt Banick - original development
 # Numerous people on freenode IRC - #bash and #sed (e36freak)
-# Rob Dixon (@304geek) - report framework idea
+# Rob Dixon (@304geek) - report framework concept
 # Robert Clowser (@dyslexicjedi)- all things
 # Saviour Emmanuel - Nmap parser
 # Securicon, LLC. - for sponsoring development of parsers
-# Steve Copland - initial report framework design
+# Steve Copland - report framework v1
 
 ##############################################################################################################
 
@@ -294,14 +295,14 @@ case $choice in
      echo
 
      echo "goofile                   (5/$total)"
-     goofile -d $domain -f doc > tmp
-     goofile -d $domain -f docx >> tmp
-     goofile -d $domain -f pdf >> tmp
-     goofile -d $domain -f ppt >> tmp
-     goofile -d $domain -f pptx >> tmp
-     goofile -d $domain -f txt >> tmp
-     goofile -d $domain -f xls >> tmp
-     goofile -d $domain -f xlsx >> tmp
+     $discover/mods/goofile.py -d $domain -f doc > tmp
+     $discover/mods/goofile.py -d $domain -f docx >> tmp
+     $discover/mods/goofile.py -d $domain -f pdf >> tmp
+     $discover/mods/goofile.py -d $domain -f ppt >> tmp
+     $discover/mods/goofile.py -d $domain -f pptx >> tmp
+     $discover/mods/goofile.py -d $domain -f txt >> tmp
+     $discover/mods/goofile.py -d $domain -f xls >> tmp
+     $discover/mods/goofile.py -d $domain -f xlsx >> tmp
 
      grep $domain tmp | grep -v 'Searching in' | grep -Fv '...' | sort > tmp2
 
@@ -381,21 +382,21 @@ case $choice in
 
      ##############################################################
 
-     cat z* > tmp
-     # Remove lines that contain a number
-     sed '/[0-9]/d' tmp > tmp2
-     # Remove lines that start with @
-     sed '/^@/ d' tmp2 > tmp3
-     # Remove lines that start with .
-     sed '/^\./ d' tmp3 > tmp4
-     # Change to lower case
-     cat tmp4 | tr '[A-Z]' '[a-z]' > tmp5
+     cat z* | egrep -v '(\*|--|=|\[|:|found|harvest|network|results)' > tmp
      # Remove blank lines
-     sed '/^$/d' tmp5 > tmp6
+     sed '/^$/d' tmp | sort -u > tmp2
+     # Remove lines that contain a number
+     sed '/[0-9]/d' tmp2 > tmp3
+     # Remove lines that start with @
+     sed '/^@/ d' tmp3 > tmp4
+     # Remove lines that start with .
+     sed '/^\./ d' tmp4 > tmp5
+     # Change to lower case
+     cat tmp5 | tr '[A-Z]' '[a-z]' > tmp6
      # Remove lines that contain a single word
-     sed '/[[:blank:]]/!d' tmp6 > tmp7
-     # Clean up
-     egrep -v '(\*|\[|:|found|full|network)' tmp7 | sort -u > names1
+     sed '/[[:blank:]]/!d' tmp6 > names1
+     # Remove all empty files
+     find -type f -empty -exec rm {} +
 
      ##############################################################
 
@@ -684,27 +685,29 @@ case $choice in
 
      ##############################################################
 
-     # Remove lines that contain a number
-     sed '/[0-9]/d' names1 > tmp2
-     # Remove lines that start with @
-     sed '/^@/ d' tmp2 > tmp3
-     # Remove lines that start with .
-     sed '/^\./ d' tmp3 > tmp4
-     # Change to lower case
-     cat tmp4 | tr '[A-Z]' '[a-z]' > tmp5
-     # Remove blank lines
-     sed '/^$/d' tmp5 > tmp6
-     # Remove lines that contain a single word
-     sed '/[[:blank:]]/!d' tmp6 > tmp7
-     # Clean up
-     egrep -v '(~|`|!|@|#|\$|%|\^|&|\*|\(|\)|_|-|\+|=|{|\[|}|]|\|:|;|"|<|>|\.|\?|/|abuse|academy|account|achievement|acquisition|acting|action|active|adjuster|admin|advanced|adventure|advertising|agency|alliance|allstate|ambassador|america|american|analysis|analyst|analytics|animal|another|antivirus|apple seems|application|applications|architect|archivist|article|assembler|assembling|assembly|asian|assignment|assistant|associate|association|attorney|audience|audio|auditor|australia|authority|automation|automotive|aviation|balance|bank|bbc|beginning|berlin|beta theta|between|big game|billion|bioimages|biometrics|bizspark|breaches|broker|builder|business|buyer|buying|california|cannot|capital|career|carrying|cashing|center|centre|certified|cfi|challenger|championship|change|chapter|charge|chemistry|china|chinese|claim|class|clearance|cloud|cnc|code|cognitive|college|columbia|coming|commercial|communications|community|company pages|competition|competitive|compliance|computer|comsec|concept|conference|config|connections|connect|construction|consultant|contact|contract|contributor|control|cooperation|coordinator|corporate|corporation|counsel|create|creative|critical|crm|croatia|cryptologic|custodian|cyber|dallas|database|day care|dba|dc|death toll|delivery|delta|department|deputy|description|designer|design|destructive|detection|develop|devine|dialysis|digital|diploma|direct|disability|disaster|disclosure|dispatch|dispute|distribut|divinity|division|dns|document|dos poc|download|driver|during|economy|ecovillage|editor|education|effect|electronic|else|email|embargo|emerging|empower|employment|end user|energy|engineer|enterprise|entertainment|entreprises|entrepreneur|entry|environmental|error page|ethical|example|excellence|executive|expectations|expertzone|exploit|facebook|facilit|faculty|failure|fall edition|fast track|fatherhood|fbi|federal|fellow|filmmaker|finance|financial|fitter|forensic|forklift|found|freelance|from|frontiers in tax|fulfillment|full|function|future|fuzzing|germany|get control|global|gnoc|google|governance|government|graphic|greater|group|guard|hackers|hacking|harden|harder|hawaii|hazing|headquarters|health|help|history|homepage|hospital|hostmaster|house|how to|hurricane|icmp|idc|in the news|index|infant|inform|innovation|installation|insurers|integrated|intellectual|international|internet|instructor|insurance|intelligence|interested|interns|investigation|investment|investor|israel|items|japan|job|justice|kelowna|knowing|language|laptops|large|leader|letter|level|liaison|licensing|lighting|linguist|linkedin|limitless|liveedu|llp|local|looking|lpn|ltd|lsu|luscous|machinist|macys|malware|managed|management|manager|managing|manufacturing|market|mastering|material|mathematician|maturity|md|mechanic|media|medical|medicine|member|merchandiser|meta tags|methane|metro|microsoft|middle east|migration|mission|mitigation|mn|money|monitor|more coming|mortgage|motor|museums|mutual|national|negative|network|network|new user|newspaper|new york|next page|night|nitrogen|nw|nyc|obtain|occupied|offers|office|online|onsite|operations|operator|order|organizational|outbreak|owner|packaging|page|palantir|paralegal|partner|pathology|peace|people|perceptions|person|pharmacist|philippines|photo|picker|picture|placement|places|planning|police|portfolio|postdoctoral|potassium|potential|preassigned|preparatory|president|principal|print|private|process|producer|product|professional|professor|profile|project|program|property|publichealth|published|pyramid|quality|questions|rcg|recruiter|redeem|redirect|region|register|registry|regulation|rehab|remote|report|representative|republic|research|resolving|responsable|restaurant|retired|revised|rising|rural health|russia|sales|sample|satellite|save the date|school|scheduling|science|scientist|search|searc|sections|secured|security|secretary|secrets|see more|selection|senior|server|service|services|social|software|solution|source|special|sql|station home|statistics|store|strategy|strength|student|study|substitute|successful|sunoikisis|superheroines|supervisor|support|surveillance|switch|system|systems|talent|targeted|tax|tcp|teach|technical|technician|technique|technology|temporary|tester|textoverflow|theater|thought|through|time in|tit for tat|title|toolbook|tools|toxic|traditions|trafficking|transfer|transformation|treasury|trojan|truck|twitter|training|ts|tylenol|types of scams|unclaimed|underground|underwriter|university|united states|untitled|vault|verification|vietnam|view|Violent|virginia bar|voice|volkswagen|volume|vp|wanted|web search|web site|website|welcome|west virginia|westchester|when the|whiskey|window|worker|world|www|xbox|zz)' tmp7 > tmp8
-     sed 's/iii/III/g' tmp8 | sed 's/ii/II/g' > tmp9
-     # Capitalize the first letter of every word
-     sed 's/\b\(.\)/\u\1/g' tmp9 | sed 's/Mca/McA/g; s/Mcb/McB/g; s/Mcc/McC/g; s/Mcd/McD/g; s/Mce/McE/g; s/Mcf/McF/g; s/Mcg/McG/g; s/Mci/McI/g; s/Mck/McK/g; s/Mcl/McL/g; s/Mcm/McM/g; s/Mcn/McN/g; s/Mcs/McS/g; s/,,/,/g' > tmp10
-     grep -v ',' tmp10 | awk '{print $2", "$1}' > tmp11
-     grep ',' tmp10 > tmp12
-     # Remove trailing whitespace from each line
-     cat tmp11 tmp12 | sed 's/[ \t]*$//' | sort -u > names2
+     if [ -e names1 ]; then
+          # Remove lines that contain a number
+          sed '/[0-9]/d' names1 > tmp2
+          # Remove lines that start with @
+          sed '/^@/ d' tmp2 > tmp3
+          # Remove lines that start with .
+          sed '/^\./ d' tmp3 > tmp4
+          # Change to lower case
+          cat tmp4 | tr '[A-Z]' '[a-z]' > tmp5
+          # Remove blank lines
+          sed '/^$/d' tmp5 > tmp6
+          # Remove lines that contain a single word
+          sed '/[[:blank:]]/!d' tmp6 > tmp7
+          # Clean up
+          egrep -v '(~|`|!|@|#|\$|%|\^|&|\*|\(|\)|_|-|\+|=|{|\[|}|]|\|:|;|"|<|>|\.|\?|/|abuse|academy|account|achievement|acquisition|acting|action|active|adjuster|admin|advanced|adventure|advertising|agency|alliance|allstate|ambassador|america|american|analysis|analyst|analytics|animal|another|antivirus|apple seems|application|applications|architect|archivist|article|assembler|assembling|assembly|asian|assignment|assistant|associate|association|attorney|audience|audio|auditor|australia|authority|automation|automotive|aviation|balance|bank|bbc|beginning|berlin|beta theta|between|big game|billion|bioimages|biometrics|bizspark|breaches|broker|builder|business|buyer|buying|california|cannot|capital|career|carrying|cashing|center|centre|certified|cfi|challenger|championship|change|chapter|charge|chemistry|china|chinese|claim|class|clearance|cloud|cnc|code|cognitive|college|columbia|coming|commercial|communications|community|company pages|competition|competitive|compliance|computer|comsec|concept|conference|config|connections|connect|construction|consultant|contact|contract|contributor|control|cooperation|coordinator|corporate|corporation|counsel|create|creative|critical|crm|croatia|cryptologic|custodian|cyber|dallas|database|day care|dba|dc|death toll|delivery|delta|department|deputy|description|designer|design|destructive|detection|develop|devine|dialysis|digital|diploma|direct|disability|disaster|disclosure|dispatch|dispute|distribut|divinity|division|dns|document|dos poc|download|driver|during|economy|ecovillage|editor|education|effect|electronic|else|email|embargo|emerging|empower|employment|end user|energy|engineer|enterprise|entertainment|entreprises|entrepreneur|entry|environmental|error page|ethical|example|excellence|executive|expectations|expertzone|exploit|facebook|facilit|faculty|failure|fall edition|fast track|fatherhood|fbi|federal|fellow|filmmaker|finance|financial|fitter|forensic|forklift|found|freelance|from|frontiers in tax|fulfillment|full|function|future|fuzzing|germany|get control|global|gnoc|google|governance|government|graphic|greater|group|guard|hackers|hacking|harden|harder|hawaii|hazing|headquarters|health|help|history|homepage|hospital|hostmaster|house|how to|hurricane|icmp|idc|in the news|index|infant|inform|innovation|installation|insurers|integrated|intellectual|international|internet|instructor|insurance|intelligence|interested|interns|investigation|investment|investor|israel|items|japan|job|justice|kelowna|knowing|language|laptops|large|leader|letter|level|liaison|licensing|lighting|linguist|linkedin|limitless|liveedu|llp|local|looking|lpn|ltd|lsu|luscous|machinist|macys|malware|managed|management|manager|managing|manufacturing|market|mastering|material|mathematician|maturity|md|mechanic|media|medical|medicine|member|merchandiser|meta tags|methane|metro|microsoft|middle east|migration|mission|mitigation|mn|money|monitor|more coming|mortgage|motor|museums|mutual|national|negative|network|network|new user|newspaper|new york|next page|night|nitrogen|nw|nyc|obtain|occupied|offers|office|online|onsite|operations|operator|order|organizational|outbreak|owner|packaging|page|palantir|paralegal|partner|pathology|peace|people|perceptions|person|pharmacist|philippines|photo|picker|picture|placement|places|planning|police|portfolio|postdoctoral|potassium|potential|preassigned|preparatory|president|principal|print|private|process|producer|product|professional|professor|profile|project|program|property|publichealth|published|pyramid|quality|questions|rcg|recruiter|redeem|redirect|region|register|registry|regulation|rehab|remote|report|representative|republic|research|resolving|responsable|restaurant|retired|revised|rising|rural health|russia|sales|sample|satellite|save the date|school|scheduling|science|scientist|search|searc|sections|secured|security|secretary|secrets|see more|selection|senior|server|service|services|social|software|solution|source|special|sql|station home|statistics|store|strategy|strength|student|study|substitute|successful|sunoikisis|superheroines|supervisor|support|surveillance|switch|system|systems|talent|targeted|tax|tcp|teach|technical|technician|technique|technology|temporary|tester|textoverflow|theater|thought|through|time in|tit for tat|title|toolbook|tools|toxic|traditions|trafficking|transfer|transformation|treasury|trojan|truck|twitter|training|ts|tylenol|types of scams|unclaimed|underground|underwriter|university|united states|untitled|vault|verification|vietnam|view|Violent|virginia bar|voice|volkswagen|volume|vp|wanted|web search|web site|website|welcome|west virginia|westchester|when the|whiskey|window|worker|world|www|xbox|zz)' tmp7 > tmp8
+          sed 's/iii/III/g' tmp8 | sed 's/ii/II/g' > tmp9
+          # Capitalize the first letter of every word
+          sed 's/\b\(.\)/\u\1/g' tmp9 | sed 's/Mca/McA/g; s/Mcb/McB/g; s/Mcc/McC/g; s/Mcd/McD/g; s/Mce/McE/g; s/Mcf/McF/g; s/Mcg/McG/g; s/Mci/McI/g; s/Mck/McK/g; s/Mcl/McL/g; s/Mcm/McM/g; s/Mcn/McN/g; s/Mcs/McS/g; s/,,/,/g' > tmp10
+          grep -v ',' tmp10 | awk '{print $2", "$1}' > tmp11
+          grep ',' tmp10 > tmp12
+          # Remove trailing whitespace from each line
+          cat tmp11 tmp12 | sed 's/[ \t]*$//' | sort -u > names2
+     fi
 
      ##############################################################
 
@@ -723,7 +726,7 @@ case $choice in
           cat passive2.rc >> passive.rc
      fi
 
-     if [ -s names2 ]; then
+     if [ -e names2 ]; then
           echo "last_name#first_name" > $home/data/names2.csv
           cat names2 | sed 's/, /#/' >> $home/data/names2.csv
           cat $discover/resource/recon-ng-import-names2.rc >> passive.rc
@@ -732,6 +735,7 @@ case $choice in
 
      cat $discover/resource/recon-ng.rc >> passive.rc
      sed -i "s/yyy/$domain/g" passive.rc
+
      recon-ng --no-check -r $discover/passive.rc
 
      ##############################################################
@@ -913,7 +917,7 @@ case $choice in
      cat zreport >> $home/data/$domain/data/passive-recon.htm; echo "</pre>" >> $home/data/$domain/data/passive-recon.htm
 
      mv recon-ng.rc $home/data/$domain/ 2>/dev/null
-     rm curl debug* emails* domain hosts names* networks passive* registered* squatting sub* tmp* whois* z* doc pdf ppt txt xls 2>/dev/null
+     rm curl debug* emails* domain hosts names* network* passive* registered* squatting sub* tmp* whois* z* doc pdf ppt txt xls 2>/dev/null
      rm $home/data/*.csv 2>/dev/null
      cd /tmp/
      rm emails names networks profiles subdomains registered-domains 2>/dev/null
@@ -937,10 +941,6 @@ case $choice in
 
      $web &
      sleep 4
-     $web https://connect.data.com/login &
-     sleep 2
-     $web http://toolbar.netcraft.com/site_report?url=http://www.$domain &
-     sleep 2
      $web https://www.google.com/search?site=\&tbm=isch\&source=hp\&q=$companyurl%2Blogo &
      sleep 2
 
