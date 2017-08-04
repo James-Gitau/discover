@@ -604,22 +604,22 @@ case $choice in
      echo "Registered Domains        (31/$total)"
      f_regdomain(){
      while read regdomain; do
-          whois -H $regdomain 2>&1 | sed -e 's|^[ \t]*||' | sed 's| \+ ||g' | sed 's|: |:|g' > tmp5
+          whois -H $regdomain 2>&1 | sed -e 's/^[ \t]*//' | sed 's/ \+ //g' | sed 's/: /:/g' > tmp5
           nomatch=$(grep -c -E 'No match for|Name or service not known' tmp5)
 
           if [[ $nomatch -eq 1 ]]; then
                echo "$regdomain -- No Whois Matches Found" >> tmp4
           else
-               registrar=$(grep -m1 'Registrar:' tmp5 | cut -d ':' -f2 | sed 's|,||g')
-               regorg=$(grep -m1 'Registrant Organization:' tmp5 | cut -d ':' -f2 | sed 's|,||g')
+               registrar=$(grep -m1 'Registrar:' tmp5 | cut -d ':' -f2 | sed 's/,//g')
+               regorg=$(grep -m1 'Registrant Organization:' tmp5 | cut -d ':' -f2 | sed 's/,//g')
                regemail=$(grep -m1 'Registrant Email:' tmp5 | cut -d ':' -f2)
                iptmp=$(ping -c1 $regdomain 2>&1)
 
                if echo $iptmp | grep -q 'unknown host'; then
-                    echo "$regdomain,$regemail,$regorg,$registrar,No IP Found" >> tmp4
+                    echo "$regdomain,No IP Found,$regemail,$regorg,$registrar" >> tmp4
                else
                     ipaddr=$(echo $iptmp | grep 'PING' | cut -d '(' -f2 | cut -d ')' -f1)
-                    echo "$regdomain,$regemail,$regorg,$registrar,$ipaddr" >> tmp4
+                    echo "$regdomain,$ipaddr,$regemail,$regorg,$registrar" >> tmp4
                fi
           fi
 
@@ -647,22 +647,22 @@ case $choice in
 
      # Loop thru list of domains, gathering details about the domain
      elif grep -q 'paymenthash' tmp; then
-          grep 'Domain Name' tmp | sed 's|<tr>|\n|g' | grep '</td></tr>' | cut -d '>' -f2 | cut -d '<' -f1 > tmp3
-          grep 'Domain Name' tmp2 | sed 's|<tr>|\n|g' | grep '</td></tr>' | cut -d '>' -f2 | cut -d '<' -f1 >> tmp3
+          grep 'Domain Name' tmp | sed 's/<tr>/\n/g' | grep '</td></tr>' | cut -d '>' -f2 | cut -d '<' -f1 > tmp3
+          grep 'Domain Name' tmp2 | sed 's/<tr>/\n/g' | grep '</td></tr>' | cut -d '>' -f2 | cut -d '<' -f1 >> tmp3
           sort -uV tmp3 -o tmp3
-          domcount=$(wc -l tmp3 | sed -e 's|^[ \t]*||' | cut -d ' ' -f1)
+          domcount=$(wc -l tmp3 | sed -e 's/^[ \t]*//' | cut -d ' ' -f1)
           f_regdomain
      else
-          grep 'ViewDNS.info' tmp | sed 's|<tr>|\n|g' | grep '</td></tr>' | grep -v -E 'font size|Domain Name' | cut -d '>' -f2 | cut -d '<' -f1 > tmp3
-          grep 'ViewDNS.info' tmp2 | sed 's|<tr>|\n|g' | grep '</td></tr>' | grep -v -E 'font size|Domain Name' | cut -d '>' -f2 | cut -d '<' -f1 >> tmp3
+          grep 'ViewDNS.info' tmp | sed 's/<tr>/\n/g' | grep '</td></tr>' | grep -v -E 'font size|Domain Name' | cut -d '>' -f2 | cut -d '<' -f1 > tmp3
+          grep 'ViewDNS.info' tmp2 | sed 's/<tr>/\n/g' | grep '</td></tr>' | grep -v -E 'font size|Domain Name' | cut -d '>' -f2 | cut -d '<' -f1 >> tmp3
           sort -uV tmp3 -o tmp3
-          domcount=$(wc -l tmp3 | sed -e 's|^[ \t]*||' | cut -d ' ' -f1)
+          domcount=$(wc -l tmp3 | sed -e 's/^[ \t]*//' | cut -d ' ' -f1)
           f_regdomain
      fi
 
      # Formatting & clean-up
-     sort tmp4 | sed 's|111AAA--placeholder--|Domain,Registrar,Registration Org,Registration Email,IP Address|' > tmp6
-     column -s ',' -t tmp6 > registered-domains
+     sort tmp4 | sed 's/111AAA--placeholder--/Domain,IP Address,Registration Email,Registration Org,Registrar,/' > tmp6
+     column -n -s ',' -t tmp6 > registered-domains
      echo "Domains registered to $company using a corporate email." >> $home/data/$domain/data/registered-domains.htm
      echo >> $home/data/$domain/data/registered-domains.htm
      echo
