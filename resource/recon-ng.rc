@@ -61,12 +61,15 @@ run
 
 back
 
+query DELETE FROM contacts WHERE last_name LIKE '% %'
+
 query UPDATE contacts SET email = LOWER(email)
 query UPDATE credentials SET username = LOWER(username)
 query UPDATE hosts SET host = LOWER(host)
 query UPDATE ports SET host = LOWER(host)
 
 query UPDATE contacts SET title = '' WHERE title = 'PGP key association'
+query UPDATE contacts SET title = '' WHERE title = 'Undetermined'
 query UPDATE contacts SET title = '' WHERE title = 'Whois contact'
 query UPDATE contacts SET title = '' WHERE title = 'Whois contact (Abuse)'
 query UPDATE contacts SET title = '' WHERE title = 'Whois contact (Admin)'
@@ -78,7 +81,7 @@ query SELECT DISTINCT username FROM credentials WHERE username LIKE "%@yyy" ORDE
 spool stop
 
 spool start /tmp/names
-query SELECT DISTINCT last_name,first_name,title FROM contacts WHERE first_name IS NOT NULL ORDER BY last_name
+query SELECT DISTINCT last_name,first_name,title FROM contacts WHERE first_name OR last_name IS NOT NULL ORDER BY last_name
 spool stop
 
 spool start /tmp/networks
