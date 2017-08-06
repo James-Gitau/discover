@@ -539,10 +539,6 @@ case $choice in
      column -s ',' -t tmp > tmp4
 
      egrep -v '(\*|%)' tmp4 >> $home/data/$domain/data/records.htm
-     echo >> $home/data/$domain/data/records.htm
-     echo '</body>' >> $home/data/$domain/data/records.htm
-     echo >> $home/data/$domain/data/records.htm
-     echo '</html>' >> $home/data/$domain/data/records.htm
 
      echo "email-format.com          (27/$total)"
      curl --silent http://www.email-format.com/d/$domain/ | grep -o [A-Za-z0-9_.]*@[A-Za-z0-9_.]*[.][A-Za-z]* > zemail-format
@@ -595,11 +591,8 @@ case $choice in
 
      if [ $x -eq 11 ]; then
           echo 'Zone transfer failed.' >> $home/data/$domain/data/zonetransfer.htm
+          echo '</pre>' >> $home/data/$domain/data/zonetransfer.htm
      fi
-
-     echo >> $home/data/$domain/data/zonetransfer.htm
-     echo '</body>' >> $home/data/$domain/data/zonetransfer.htm
-     echo '</html>' >> $home/data/$domain/data/zonetransfer.htm
 
      echo "Registered Domains        (31/$total)"
      f_regdomain(){
@@ -786,6 +779,8 @@ case $choice in
           cat emails-final >> tmp
           echo >> tmp
           cat emails-final >> $home/data/$domain/data/emails.htm; echo "</pre>" >> $home/data/$domain/data/emails.htm
+     else
+          echo "No data found." >> $home/data/$domain/data/emails.htm; echo "</pre>" >> $home/data/$domain/data/emails.htm
      fi
 
      if [ -e names-recon ]; then
@@ -796,6 +791,8 @@ case $choice in
           cat names-recon >> tmp
           echo >> tmp
           cat names-recon >> $home/data/$domain/data/names.htm; echo "</pre>" >> $home/data/$domain/data/names.htm
+     else
+          echo "No data found." >> $home/data/$domain/data/names.htm; echo "</pre>" >> $home/data/$domain/data/names.htm
      fi
 
      if [ -s networks ]; then
@@ -825,6 +822,8 @@ case $choice in
           cat registered-domains >> tmp
           echo >> tmp
           cat registered-domains >> $home/data/$domain/data/registered-domains.htm; echo "</pre>" >> $home/data/$domain/data/registered-domains.htm
+     else
+          echo "No data found." >> $home/data/$domain/data/registered-domains.htm; echo "</pre>" >> $home/data/$domain/data/registered-domains.htm
      fi
 
      if [ -e squatting ]; then
@@ -835,6 +834,8 @@ case $choice in
           cat squatting >> tmp
           echo >> tmp
           cat squatting >> $home/data/$domain/data/squatting.htm; echo "</pre>" >> $home/data/$domain/data/squatting.htm
+     else
+          echo "No data found." >> $home/data/$domain/data/squatting.htm; echo "</pre>" >> $home/data/$domain/data/squatting.htm
      fi
 
      if [ -e subdomains ]; then
@@ -845,6 +846,8 @@ case $choice in
           cat subdomains >> tmp
           echo >> tmp
           cat subdomains >> $home/data/$domain/data/subdomains.htm; echo "</pre>" >> $home/data/$domain/data/subdomains.htm
+     else
+          echo "No data found." >> $home/data/$domain/data/subdomains.htm; echo "</pre>" >> $home/data/$domain/data/subdomains.htm
      fi
 
      if [ -e xls ]; then
@@ -855,6 +858,8 @@ case $choice in
           cat xls >> tmp
           echo >> tmp
           cat xls >> $home/data/$domain/data/xls.htm; echo "</pre>" >> $home/data/$domain/data/xls.htm
+     else
+          echo "No data found." >> $home/data/$domain/data/xls.htm; echo "</pre>" >> $home/data/$domain/data/xls.htm
      fi
 
      if [ -e pdf ]; then
@@ -865,6 +870,8 @@ case $choice in
           cat pdf >> tmp
           echo >> tmp
           cat pdf >> $home/data/$domain/data/pdf.htm; echo "</pre>" >> $home/data/$domain/data/pdf.htm
+     else
+          echo "No data found." >> $home/data/$domain/data/pdf.htm; echo "</pre>" >> $home/data/$domain/data/pdf.htm
      fi
 
      if [ -e ppt ]; then
@@ -875,6 +882,8 @@ case $choice in
           cat ppt >> tmp
           echo >> tmp
           cat ppt >> $home/data/$domain/data/ppt.htm; echo "</pre>" >> $home/data/$domain/data/ppt.htm
+     else
+          echo "No data found." >> $home/data/$domain/data/ppt.htm; echo "</pre>" >> $home/data/$domain/data/ppt.htm
      fi
 
      if [ -e txt ]; then
@@ -885,6 +894,8 @@ case $choice in
           cat txt >> tmp
           echo >> tmp
           cat txt >> $home/data/$domain/data/txt.htm; echo "</pre>" >> $home/data/$domain/data/txt.htm
+     else
+          echo "No data found." >> $home/data/$domain/data/txt.htm; echo "</pre>" >> $home/data/$domain/data/txt.htm
      fi
 
      if [ -e doc ]; then
@@ -895,6 +906,8 @@ case $choice in
           cat doc >> tmp
           echo >> tmp
           cat doc >> $home/data/$domain/data/doc.htm; echo "</pre>" >> $home/data/$domain/data/doc.htm
+     else
+          echo "No data found." >> $home/data/$domain/data/doc.htm; echo "</pre>" >> $home/data/$domain/data/doc.htm
      fi
 
      cat tmp >> zreport
@@ -904,6 +917,8 @@ case $choice in
           echo $long >> zreport
           cat whois-domain >> zreport
           cat whois-domain >> $home/data/$domain/data/whois-domain.htm; echo "</pre>" >> $home/data/$domain/data/whois-domain.htm
+     else
+          echo "No data found." >> $home/data/$domain/data/whois-domain.htm; echo "</pre>" >> $home/data/$domain/data/whois-domain.htm
      fi
 
      if [ -e whois-ip ]; then
@@ -912,6 +927,8 @@ case $choice in
           echo $long >> zreport
           cat whois-ip >> zreport
           cat whois-ip >> $home/data/$domain/data/whois-ip.htm; echo "</pre>" >> $home/data/$domain/data/whois-ip.htm
+     else
+          echo "No data found." >> $home/data/$domain/data/whois-ip.htm; echo "</pre>" >> $home/data/$domain/data/whois-ip.htm
      fi
 
      cat zreport >> $home/data/$domain/data/passive-recon.htm; echo "</pre>" >> $home/data/$domain/data/passive-recon.htm
