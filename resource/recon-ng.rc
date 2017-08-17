@@ -54,6 +54,7 @@ use recon/hosts-ports/shodan_ip
 run
 back
 query DELETE FROM contacts WHERE last_name LIKE '% %'
+query DELETE FROM contacts WHERE last_name LIKE '(%'
 query UPDATE contacts SET email = LOWER(email)
 query UPDATE credentials SET username = LOWER(username)
 query UPDATE hosts SET host = LOWER(host)
