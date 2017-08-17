@@ -3745,7 +3745,7 @@ echo "Running sslyze."
 sslyze --targets_in=$location --resum --certinfo=basic --compression --reneg --sslv2 --sslv3 --hide_rejected_ciphers > tmp
 
 # Remove the first 23 lines
-sed '1,23d' tmp > $home/data/sslyze.txt
+sed '1,23d' tmp | egrep -v '(ERROR|Exponent|Not Before|NOT SUPPORTED|OK - C|OK - R|OK - S|PARTIALLY|rejected all|Serial Number|SHA1 Fingerprint)' > $home/data/sslyze.txt
 
 echo
 echo "Running sslscan."
