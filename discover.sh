@@ -385,7 +385,7 @@ case $choice in
 
      ##############################################################
 
-     cat z* | egrep -v '(\*|--|=|\[|:|found|harvest|network|results)' > tmp
+     cat z* | egrep -v '(\*|\(|--|=|\[|:|found|harvest|network|results)' > tmp
      # Remove blank lines
      sed '/^$/d' tmp | sort -u > tmp2
      # Remove lines that contain a number
@@ -742,20 +742,20 @@ case $choice in
 
      ##############################################################
 
-     grep "@$domain" /tmp/emails | awk '{print $2}' | grep -v '>' | sort -u > emails-recon
-     cat emails emails-recon | grep -iv 'select' | sort -u > emails-final
+     grep "@$domain" /tmp/emails | awk '{print $2}' | egrep -v '(>|SELECT)' | sort -u > emails-recon
+     cat emails emails-recon | sort -u > emails-final
 
      grep '|' /tmp/names | egrep -iv '(_|aepohio|aepsoc|arin-notify|contact|netops|production)' | sed 's/|//g; s/^[ \t]*//; /^[0-9]/d; /^-/d' | tr '[A-Z]' '[a-z]' | sed 's/\b\(.\)/\u\1/g; s/iii/III/g; s/ii/II/g; s/Mca/McA/g; s/Mcb/McB/g; s/Mcc/McC/g; s/Mcd/McD/g; s/Mce/McE/g; s/Mcf/McF/g; s/Mcg/McG/g; s/Mci/McI/g; s/Mck/McK/g; s/Mcl/McL/g; s/Mcm/McM/g; s/Mcn/McN/g; s/Mcs/McS/g; s/[ \t]*$//' | sort -u > names-recon
 
      grep '/' /tmp/networks | grep -v 'Spooling' | awk '{print $2}' | $sip > networks-recon
 
-     grep "$domain" /tmp/subdomains | grep -v '>' | awk '{print $2,$4}' | column -t | sort -u > sub-recon
+     grep "$domain" /tmp/subdomains | egrep -v '(>|SELECT)' | awk '{print $2,$4}' | column -t | sort -u > sub-recon
 
      ##############################################################
 
      cat networks-tmp networks-recon | sort -u | $sip > networks
 
-     cat sub* | grep -v "$domain\." | grep -v '|' | sed 's/www\.//g' | grep -iv 'select' | column -t | tr '[A-Z]' '[a-z]' | sort -u > tmp
+     cat sub* | grep -v "$domain\." | grep -v '|' | sed 's/www\.//g' | grep -v 'SELECT' | column -t | tr '[A-Z]' '[a-z]' | sort -u > tmp
      # Remove lines that contain a single word
      sed '/[[:blank:]]/!d' tmp > subdomains
 
