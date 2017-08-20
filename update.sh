@@ -11,9 +11,9 @@ tlddir=$(locate homophones.rb | sed 's%/[^/]*$%/%')
 cd $tlddir
 
 if [ ! -f tld.rb.bak ]; then
-     cp tld.rb tld.rb.bak
-     cat tld.rb | grep '"bd"=>' -v | grep '"bn"=>' -v | grep '"br"=>' -v > tld_tmp.rb
-     mv tld_tmp.rb tld.rb
+    cp tld.rb tld.rb.bak
+    cat tld.rb | grep '"bd"=>' -v | grep '"bn"=>' -v | grep '"br"=>' -v > tld_tmp.rb
+    mv tld_tmp.rb tld.rb
 fi
 
 #########################################################
@@ -25,10 +25,10 @@ if [ -d /pentest ]; then
      echo
      exit
 fi
- 
+
 echo -e "\e[1;34mUpdating Kali.\e[0m"
 apt-get update ; apt-get -y upgrade ; apt-get -y dist-upgrade ; apt-get -y autoremove ; apt-get -y autoclean ; echo
- 
+
 if [ -d /opt/BloodHound/.git ]; then
      echo -e "\e[1;34mUpdating BloodHound.\e[0m"
      cd /opt/BloodHound/ ; git pull
@@ -153,10 +153,10 @@ if [ -d /opt/Responder/.git ]; then
 fi
 
 if [[  -d /opt/theHarvester/.git ]]; then
-     echo -e "\e[1;33mDeleting theHarvester.\e[0m"
-     rm -rf /opt/theHarvester
-     rm /usr/share/theHarvester
-     echo
+    echo -e "\e[1;33mDeleting theHarvester.\e[0m"
+    rm -rf /opt/theHarvester
+    rm /usr/share/theHarvester
+    echo
 fi
 
 if [ ! -f /usr/bin/xdotool ]; then
