@@ -4282,7 +4282,7 @@ case $choice in
      9) f_directObjectRef;;
      10) f_multitabs;;
      11) f_errorOSX; f_nikto;;
-     12) f_errorOSX; f_ssl;;
+     12) f_ssl;;
      13) f_runlocally && $discover/crack-wifi.sh;;
      14) f_parse;;
      15) f_payload;;
